@@ -25,6 +25,7 @@ class VideoTracker(object):
         self.cfg = cfg
         self.args = args
         self.video_path = video_path
+        self.seq_name = self.video_path.split('/')[-3]
         ## self.track_class
         # yolov3,   person_id = 0; car_id = 2,  选择人cls_ids=0，作为跟踪; car, cls_ids=2, 具体见 coco.name; 
         # -1  所有目标都进行跟踪
@@ -32,7 +33,10 @@ class VideoTracker(object):
         self.logger = get_logger("root")
         self.reid_feature_dic = {}
         self.now_frame = 0
-        self.cam_id =  video_path.split(os.sep)[-2]     # video_path = /workspace/dataset/aic22-mcmt/S06/c112/vdo.avi
+        try:
+            self.cam_id =  video_path.split(os.sep)[-2]     # video_path = /workspace/dataset/aic22-mcmt/S06/c112/vdo.avi
+        except:
+            self.cam_id = '001'
 
         use_cuda = args.use_cuda and torch.cuda.is_available()
         if not use_cuda:
@@ -95,7 +99,7 @@ class VideoTracker(object):
         return out_dict      
 
     def save_dic_to_pkl(self, dic={}, output_path="./", cam="c112"):
-        feat_pkl_file = os.path.join(self.args.save_path, f'{cam}_dets_feat.pkl')
+        feat_pkl_file = os.path.join(self.args.save_path, f'{self.seq_name}_dets_feat.pkl')
         pickle.dump(dic, open(feat_pkl_file, 'wb'), pickle.HIGHEST_PROTOCOL)
         print('save pickle in %s' % feat_pkl_file)
 
@@ -107,18 +111,30 @@ class VideoTracker(object):
             self.im_height = frame.shape[1]
 
         else:
-            assert os.path.isfile(self.video_path), "Path error"
-            self.vdo.open(self.video_path)
+            if os.path.isfile(self.video_path):
+                # assert os.path.isfile(self.video_path), "Path error"
+                self.vdo.open(self.video_path)
+                
+            else: #os.path.isdir(self.video_path):
+                # open images sequence
+                self.vdo.open(self.video_path)
+                
+            # else:
+            #     assert False, "VIDEO_PATH error"
+
             self.im_width = int(self.vdo.get(cv2.CAP_PROP_FRAME_WIDTH))
             self.im_height = int(self.vdo.get(cv2.CAP_PROP_FRAME_HEIGHT))
             assert self.vdo.isOpened()
+            
 
         if self.args.save_path:
             os.makedirs(self.args.save_path, exist_ok=True)
 
+            
+
             # path of saved video and results
-            self.save_video_path = os.path.join(self.args.save_path, "results.avi")
-            self.save_results_path = os.path.join(self.args.save_path, "results.txt")
+            self.save_video_path = os.path.join(self.args.save_path, "{}.avi".format(self.seq_name))
+            self.save_results_path = os.path.join(self.args.save_path, "{}.txt".format(self.seq_name))
 
             # create video writer
             fourcc = cv2.VideoWriter_fourcc(*'MJPG')
@@ -195,8 +211,8 @@ class VideoTracker(object):
             write_results(self.save_results_path, results, 'mot')
 
             # logging
-            self.logger.info("time: {:.03f}s, fps: {:.03f}, detection numbers: {}, tracking numbers: {}" \
-                             .format(end - start, 1 / (end - start), bbox_xywh.shape[0], len(outputs)))
+            # self.logger.info("time: {:.03f}s, fps: {:.03f}, detection numbers: {}, tracking numbers: {}" \
+            #                  .format(end - start, 1 / (end - start), bbox_xywh.shape[0], len(outputs)))
             # reid feature
             if len(detections) >0:
                 out_dic = self.update_reid_feature_dic(frame=self.now_frame, detections= detections)

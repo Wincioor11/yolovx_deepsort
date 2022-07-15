@@ -1,0 +1,11 @@
+YOLOV7:
+  WEIGHT: "./detector/YOLOV7/weights/seadrones_cocotune/best.pt"
+  # WEIGHT: "./detector/YOLOV7/weights/seadronesv2/best.pt"
+  # WEIGHT: "./detector/YOLOV7/weights/seadronesv2/last.pt"
+
+  IMG_SIZE: 1024
+  SCORE_THRESH: 0.35
+  CONF_THRESH: 0.25
+  NMS_THRESH: 0.45
+  IS_XYWH:  True
+  HALF: False

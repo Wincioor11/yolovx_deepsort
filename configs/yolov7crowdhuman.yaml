@@ -1,0 +1,10 @@
+YOLOV7:
+  WEIGHT: "./detector/YOLOV7/weights/crowdhuman_cocotune50e/best.pt"
+  # WEIGHT: "./detector/YOLOV7/weights/crowdhuman_cocotune100e/best.pt"
+
+  IMG_SIZE: 640
+  SCORE_THRESH: 0.35
+  CONF_THRESH: 0.25
+  NMS_THRESH: 0.45
+  IS_XYWH:  True
+  HALF: False

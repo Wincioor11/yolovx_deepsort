@@ -2,7 +2,7 @@ import torch
 import logging
 import numpy as np
 import cv2
-# from .models import *
+from .models import *
 # from .utils import *
 import sys
 
@@ -11,7 +11,7 @@ import utils
 from models.experimental import attempt_load
 from detector.YOLOV5.utils.general import check_img_size, non_max_suppression, apply_classifier, scale_coords, xyxy2xywh, \
     strip_optimizer, set_logging, increment_path
-from detector.YOLOV5.utils.datasets import  letterbox
+from detector.YOLOV5.utils.dataloaders import  letterbox
 
 class YOLOv5(object):
     def __init__(self, weightfile="", 
@@ -19,7 +19,7 @@ class YOLOv5(object):
                  is_xywh=True, use_cuda=True, imgsz=640):    
         # net definition
         self.device = "cuda" if use_cuda else "cpu"
-        self.net = attempt_load(weightfile, map_location=self.device)  # load FP32 model
+        self.net = attempt_load(weightfile, device=self.device)  # load FP32 model
         imgsz = check_img_size(imgsz, s=self.net.stride.max())  # check img_size
         self.class_names = self.net.module.names if hasattr(self.net, 'module') else self.net.names
 

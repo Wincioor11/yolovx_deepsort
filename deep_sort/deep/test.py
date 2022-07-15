@@ -44,7 +44,8 @@ galleryloader = torch.utils.data.DataLoader(
 # model_path = "/workspace/py/deep_sort_pytorch/deep_sort/deep/checkpoint/original_ckpt.t7"   # Acc top1:0.970
                                                                                             # 输出 [batch_size, 128]
 # model_path = "/workspace/py/deep_sort_pytorch/checkpoint/original38.t7"                                                                                        
-model_path = "/workspace/py/deep_sort_pytorch/checkpoint/original_e75acc92.54327563249001.t7"
+# model_path = "/workspace/py/deep_sort_pytorch/checkpoint/original_e75acc92.54327563249001.t7"
+model_path = "deep_sort\deep\checkpoint\ckpt_org.t7"
 # net definition
 print(os.getcwd())      # /workspace/py/deep_sort_pytorch
 assert os.path.isfile(model_path), "Error: no checkpoint file found!"
