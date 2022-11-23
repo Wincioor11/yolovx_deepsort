@@ -7,8 +7,11 @@ import math
 import numpy as np
 import torch
 import torch.nn as nn
+try:
+    from utils.downloads import attempt_download
+except:
+    from detector.YOLOV5.utils.downloads import attempt_download
 
-from detector.YOLOV5.utils.downloads import attempt_download
 
 
 class Sum(nn.Module):

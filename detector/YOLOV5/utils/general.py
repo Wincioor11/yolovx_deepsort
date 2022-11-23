@@ -15,7 +15,6 @@ import re
 import shutil
 import signal
 import sys
-import threading
 import time
 import urllib
 from datetime import datetime
@@ -34,8 +33,14 @@ import torch
 import torchvision
 import yaml
 
-from ..utils.downloads import gsutil_getsize
-from ..utils.metrics import box_iou, fitness
+try:
+    from utils import TryExcept
+    from utils.downloads import gsutil_getsize
+    from utils.metrics import box_iou, fitness
+except:
+    from detector.YOLOV5.utils import TryExcept
+    from detector.YOLOV5.utils.downloads import gsutil_getsize
+    from detector.YOLOV5.utils.metrics import box_iou, fitness
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[1]  # YOLOv5 root directory
@@ -195,27 +200,6 @@ class WorkingDirectory(contextlib.ContextDecorator):
         os.chdir(self.cwd)
 
 
-def try_except(func):
-    # try-except function. Usage: @try_except decorator
-    def handler(*args, **kwargs):
-        try:
-            func(*args, **kwargs)
-        except Exception as e:
-            print(e)
-
-    return handler
-
-
-def threaded(func):
-    # Multi-threads a target function and returns thread. Usage: @threaded decorator
-    def wrapper(*args, **kwargs):
-        thread = threading.Thread(target=func, args=args, kwargs=kwargs, daemon=True)
-        thread.start()
-        return thread
-
-    return wrapper
-
-
 def methods(instance):
     # Get class/instance methods
     return [f for f in dir(instance) if callable(getattr(instance, f)) and not f.startswith("__")]
@@ -319,7 +303,7 @@ def git_describe(path=ROOT):  # path must be a directory
         return ''
 
 
-@try_except
+@TryExcept()
 @WorkingDirectory(ROOT)
 def check_git_status(repo='ultralytics/yolov5'):
     # YOLOv5 status check, recommend 'git pull' if code is out of date
@@ -364,7 +348,7 @@ def check_version(current='0.0.0', minimum='0.0.0', name='version ', pinned=Fals
     return result
 
 
-@try_except
+@TryExcept()
 def check_requirements(requirements=ROOT / 'requirements.txt', exclude=(), install=True, cmds=()):
     # Check installed dependencies meet YOLOv5 requirements (pass *.txt file or list of packages)
     prefix = colorstr('red', 'bold', 'requirements:')
@@ -556,8 +540,8 @@ def check_amp(model):
 
     prefix = colorstr('AMP: ')
     device = next(model.parameters()).device  # get model device
-    if device.type == 'cpu':
-        return False  # AMP disabled on CPU
+    if device.type in ('cpu', 'mps'):
+        return False  # AMP only used on CUDA devices
     f = ROOT / 'data' / 'images' / 'bus.jpg'  # image to check
     im = f if f.exists() else 'https://ultralytics.com/images/bus.jpg' if check_online() else np.ones((640, 640, 3))
     try:

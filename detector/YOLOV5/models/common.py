@@ -19,14 +19,20 @@ import torch
 import torch.nn as nn
 from PIL import Image
 from torch.cuda import amp
-
-from detector.YOLOV5.utils.dataloaders import exif_transpose, letterbox
-from detector.YOLOV5.utils.general import (LOGGER, ROOT, Profile, check_requirements, check_suffix, check_version, colorstr,
-                           increment_path, make_divisible, non_max_suppression, scale_coords, xywh2xyxy, xyxy2xywh,
-                           yaml_load)
-from detector.YOLOV5.utils.plots import Annotator, colors, save_one_box
-from detector.YOLOV5.utils.torch_utils import copy_attr, smart_inference_mode
-
+try:
+    from utils.dataloaders import exif_transpose, letterbox
+    from utils.general import (LOGGER, ROOT, Profile, check_requirements, check_suffix, check_version, colorstr,
+                            increment_path, make_divisible, non_max_suppression, scale_coords, xywh2xyxy, xyxy2xywh,
+                            yaml_load)
+    from utils.plots import Annotator, colors, save_one_box
+    from utils.torch_utils import copy_attr, smart_inference_mode
+except:
+    from detector.YOLOV5.utils.dataloaders import exif_transpose, letterbox
+    from detector.YOLOV5.utils.general import (LOGGER, ROOT, Profile, check_requirements, check_suffix, check_version, colorstr,
+                            increment_path, make_divisible, non_max_suppression, scale_coords, xywh2xyxy, xyxy2xywh,
+                            yaml_load)
+    from detector.YOLOV5.utils.plots import Annotator, colors, save_one_box
+    from detector.YOLOV5.utils.torch_utils import copy_attr, smart_inference_mode    
 
 def autopad(k, p=None):  # kernel, padding
     # Pad to 'same'

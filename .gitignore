@@ -35,3 +35,7 @@ output
 
 eval_results
 eval_results/*
+*.wts
+*.zip
+*.conv*
+*.pyc

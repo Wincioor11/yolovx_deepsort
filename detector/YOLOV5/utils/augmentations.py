@@ -11,8 +11,12 @@ import numpy as np
 import torchvision.transforms as T
 import torchvision.transforms.functional as TF
 
-from detector.YOLOV5.utils.general import LOGGER, check_version, colorstr, resample_segments, segment2box
-from detector.YOLOV5.utils.metrics import bbox_ioa
+try:
+    from utils.general import LOGGER, check_version, colorstr, resample_segments, segment2box
+    from utils.metrics import bbox_ioa        
+except:
+    from detector.YOLOV5.utils.general import LOGGER, check_version, colorstr, resample_segments, segment2box
+    from detector.YOLOV5.utils.metrics import bbox_ioa
 
 IMAGENET_MEAN = 0.485, 0.456, 0.406  # RGB mean
 IMAGENET_STD = 0.229, 0.224, 0.225  # RGB standard deviation
