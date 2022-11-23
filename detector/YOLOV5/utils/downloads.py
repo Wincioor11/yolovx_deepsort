@@ -35,7 +35,10 @@ def gsutil_getsize(url=''):
 
 def safe_download(file, url, url2=None, min_bytes=1E0, error_msg=''):
     # Attempts to download file from url or url2, checks and removes incomplete downloads < min_bytes
-    from utils.general import LOGGER
+    try:
+        from utils.general import LOGGER
+    except:
+        from detector.YOLOV5.utils.general import LOGGER
 
     file = Path(file)
     assert_msg = f"Downloaded file '{file}' does not exist or size is < min_bytes={min_bytes}"

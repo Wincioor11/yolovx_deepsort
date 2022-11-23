@@ -32,7 +32,8 @@ if torch.cuda.is_available() and not args.no_cuda:
 # data loading
 root = args.data_dir
 train_dir = os.path.join(root,"train")
-test_dir = os.path.join(root,"val")
+test_dir = os.path.join(root,"test")
+# test_dir = os.path.join(root,"val")
 transform_train = torchvision.transforms.Compose([
     torchvision.transforms.RandomCrop((128,64),padding=4),
     torchvision.transforms.RandomHorizontalFlip(),
@@ -53,6 +54,7 @@ testloader = torch.utils.data.DataLoader(
     batch_size=64,shuffle=True
 )
 num_classes = max(len(trainloader.dataset.classes), len(testloader.dataset.classes))
+print(trainloader.dataset.classes)
 
 # net definition
 start_epoch = 0
@@ -101,6 +103,9 @@ def train(epoch):
     interval = args.interval
     start = time.time()
     for idx, (inputs, labels) in enumerate(trainloader):
+        print(idx)
+        print(inputs)
+        print(labels)
         # forward
         inputs,labels = inputs.to(device),labels.to(device)
         outputs = net(inputs)

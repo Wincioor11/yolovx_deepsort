@@ -1,20 +1,28 @@
 from .YOLOv3 import YOLOv3
-from .MMDet import MMDet
+# uncommnet if using MMDet
+# from .MMDet import MMDet
 
 
 
 __all__ = ['build_detector']        # 
 
 def build_detector(cfg, use_cuda):
-    if cfg.USE_MMDET:
-        return MMDet(cfg.MMDET.CFG, cfg.MMDET.CHECKPOINT,
-                    score_thresh=cfg.MMDET.SCORE_THRESH,
-                    is_xywh=True, use_cuda=use_cuda)
-    else:
+    # if cfg.USE_MMDET:
+    #     return MMDet(cfg.MMDET.CFG, cfg.MMDET.CHECKPOINT,
+    #                 score_thresh=cfg.MMDET.SCORE_THRESH,
+    #                 is_xywh=True, use_cuda=use_cuda)
+    # else:
+    if True:
         if cfg.DETECT_MODEL == "yolov3":
-            return YOLOv3(cfg.YOLOV3.CFG, cfg.YOLOV3.WEIGHT, cfg.YOLOV3.CLASS_NAMES, 
-                        score_thresh=cfg.YOLOV3.SCORE_THRESH, nms_thresh=cfg.YOLOV3.NMS_THRESH, 
-                        is_xywh=True, use_cuda=use_cuda)
+            return YOLOv3(
+                cfg.YOLOV3.CFG, 
+                cfg.YOLOV3.WEIGHT, 
+                cfg.YOLOV3.CLASS_NAMES, 
+                score_thresh=cfg.YOLOV3.SCORE_THRESH, 
+                nms_thresh=cfg.YOLOV3.NMS_THRESH, 
+                is_xywh=True, 
+                use_cuda=use_cuda
+                )
         elif cfg.DETECT_MODEL == "yolov4":
             from .YOLOV4 import YOLOv4  # 当前文件导入对应的包
             return YOLOv4(  
@@ -73,7 +81,18 @@ def build_detector(cfg, use_cuda):
                 is_xywh=cfg.YOLOV7.IS_XYWH, 
                 use_cuda=use_cuda,
                 imgsz=cfg.YOLOV7.IMG_SIZE
-                )                
+                )    
+        elif cfg.DETECT_MODEL == "yolos":
+            from .YOLOS import YOLOS  # 当前文件导入对应的包
+            return YOLOS(  
+                weightfile=cfg.YOLOS.WEIGHT,
+                score_thresh=cfg.YOLOS.SCORE_THRESH, 
+                conf_thresh=cfg.YOLOS.CONF_THRESH,
+                nms_thresh=cfg.YOLOS.NMS_THRESH, 
+                is_xywh=cfg.YOLOS.IS_XYWH, 
+                use_cuda=use_cuda,
+                imgsz=cfg.YOLOS.IMG_SIZE
+                )              
         elif cfg.DETECT_MODEL == "yolox":
             from .YOLOX import YOLOx  # 当前文件导入对应的包
             return YOLOx(  

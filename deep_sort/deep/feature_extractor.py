@@ -4,14 +4,16 @@ import torchvision.transforms as transforms
 import numpy as np
 import cv2
 import logging
-from .model import Net
-# try:
-#     from model import Net
-# except:
-#     from .model import Net
-from fastreid.config import get_cfg
-from fastreid.engine import DefaultTrainer
-from fastreid.utils.checkpoint import Checkpointer
+# from .model import Net
+try:
+    from model import Net
+except:
+    from .model import Net
+
+# uncomment if using fast-reid
+# from fastreid.config import get_cfg
+# from fastreid.engine import DefaultTrainer
+# from fastreid.utils.checkpoint import Checkpointer
 
 class Extractor(object):
     def __init__(self, model_path, use_cuda=True):

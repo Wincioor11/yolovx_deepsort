@@ -1,6 +1,7 @@
 YOLOV7:
-  WEIGHT: "./models/yolov7/yolov7.pt"
+  WEIGHT: "./detector/YOLOV7/yolov7.pt"
 
+  DETECT_MODEL: "yolov7"
   IMG_SIZE: 640
   SCORE_THRESH: 0.5
   CONF_THRESH: 0.25

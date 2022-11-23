@@ -1,5 +1,5 @@
 YOLOV6:
-  WEIGHT: "./models/yolov6/yolov6s.pt"
+  WEIGHT: "./detector/YOLOV6/weights/yolov6s.pt"
 
   DATASET: ./detector/YOLOV6/data/coco.yaml
   IMG_SIZE: 640

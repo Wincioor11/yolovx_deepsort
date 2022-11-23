@@ -8,8 +8,12 @@ from copy import deepcopy
 import numpy as np
 import torch
 
-from utils.general import LOGGER, colorstr
-from utils.torch_utils import profile
+try:
+    from utils.general import LOGGER, colorstr
+    from utils.torch_utils import profile
+except:
+    from detector.YOLOV5.utils.general import LOGGER, colorstr
+    from detector.YOLOV5.utils.torch_utils import profile
 
 
 def check_train_batch_size(model, imgsz=640, amp=True):
