@@ -5,9 +5,9 @@ python yolovx_deepsort_eval.py \
 --frame_interval 1 \
 --display_width 800 \
 --display_height 600 \
---save_path ./eval_results/yolov5/motr
+--save_path ./eval_results/yolov5-just-test/motr
 
-python yolovx_deepsort_eval.py --config_detection ./configs/yolov5l.yaml --config_deepsort ./configs/deep_sort.yaml --detect_model yolov5 --frame_interval 1 --display_width 800 --display_height 600 --save_path ./eval_results/yolov5/motr
+python yolovx_deepsort_eval.py --config_detection ./configs/yolov5l.yaml --config_deepsort ./configs/deep_sort.yaml --detect_model yolov5 --frame_interval 1 --display_width 800 --display_height 600 --save_path ./eval_results/yolov5-just-test/motr
 
 
 python TrackEval/scripts/run_mot_challenge.py \

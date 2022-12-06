@@ -13,7 +13,7 @@ def build_detector(cfg, use_cuda):
     #                 is_xywh=True, use_cuda=use_cuda)
     # else:
     if True:
-        if cfg.DETECT_MODEL == "yolov3":
+        if "yolov3" in cfg.DETECT_MODEL:
             return YOLOv3(
                 cfg.YOLOV3.CFG, 
                 cfg.YOLOV3.WEIGHT, 
@@ -23,7 +23,7 @@ def build_detector(cfg, use_cuda):
                 is_xywh=True, 
                 use_cuda=use_cuda
                 )
-        elif cfg.DETECT_MODEL == "yolov4":
+        elif "yolov4" in cfg.DETECT_MODEL:
             from .YOLOV4 import YOLOv4  # 当前文件导入对应的包
             return YOLOv4(  
                 model_cfg=cfg.YOLOV4.CFG,
@@ -36,7 +36,7 @@ def build_detector(cfg, use_cuda):
                 imgsz=cfg.YOLOV4.IMG_SIZE,
                 dataset_config=cfg.YOLOV4.DATASET
                 )                          
-        elif cfg.DETECT_MODEL == "yolov4Scaled":
+        elif "yolov4Scaled" in cfg.DETECT_MODEL:
             from .YOLOV4Scaled import YOLOv4Scaled  # 当前文件导入对应的包
             return YOLOv4Scaled(  
                 weightfile=cfg.YOLOV4Scaled.WEIGHT,
@@ -47,7 +47,7 @@ def build_detector(cfg, use_cuda):
                 use_cuda=use_cuda,
                 imgsz=cfg.YOLOV4Scaled.IMG_SIZE
                 )                                         
-        elif cfg.DETECT_MODEL == "yolov5":
+        elif "yolov5" in cfg.DETECT_MODEL:
             from .YOLOV5 import YOLOv5  # 当前文件导入对应的包
             return YOLOv5(  
                 weightfile=cfg.YOLOV5.WEIGHT,
@@ -59,7 +59,7 @@ def build_detector(cfg, use_cuda):
                 imgsz=(cfg.YOLOV5.IMG_SIZE_HEIGHT, cfg.YOLOV5.IMG_SIZE_WIDTH),
                 config= cfg.YOLOV5
                 )
-        elif cfg.DETECT_MODEL == "yolov6":
+        elif "yolov6" in cfg.DETECT_MODEL:
             from .YOLOV6 import YOLOv6  # 当前文件导入对应的包
             return YOLOv6(  
                 weightfile=cfg.YOLOV6.WEIGHT,
@@ -71,7 +71,7 @@ def build_detector(cfg, use_cuda):
                 imgsz=cfg.YOLOV6.IMG_SIZE,
                 dataset_config=cfg.YOLOV6.DATASET
                 )                
-        elif cfg.DETECT_MODEL == "yolov7":
+        elif "yolov7" in cfg.DETECT_MODEL:
             from .YOLOV7 import YOLOv7  # 当前文件导入对应的包
             return YOLOv7(  
                 weightfile=cfg.YOLOV7.WEIGHT,
@@ -82,7 +82,7 @@ def build_detector(cfg, use_cuda):
                 use_cuda=use_cuda,
                 imgsz=cfg.YOLOV7.IMG_SIZE
                 )    
-        elif cfg.DETECT_MODEL == "yolos":
+        elif "yolos" in cfg.DETECT_MODEL:
             from .YOLOS import YOLOS  # 当前文件导入对应的包
             return YOLOS(  
                 weightfile=cfg.YOLOS.WEIGHT,
@@ -93,7 +93,7 @@ def build_detector(cfg, use_cuda):
                 use_cuda=use_cuda,
                 imgsz=cfg.YOLOS.IMG_SIZE
                 )              
-        elif cfg.DETECT_MODEL == "yolox":
+        elif "yolox" in cfg.DETECT_MODEL:
             from .YOLOX import YOLOx  # 当前文件导入对应的包
             return YOLOx(  
                 weightfile=cfg.YOLOX.WEIGHT,
@@ -105,7 +105,7 @@ def build_detector(cfg, use_cuda):
                 imgsz=cfg.YOLOX.IMG_SIZE,
                 config = cfg.YOLOX
                 )    
-        elif cfg.DETECT_MODEL == "yolor":
+        elif "yolor" in cfg.DETECT_MODEL:
             from .YOLOR import YOLOr  # 当前文件导入对应的包
             return YOLOr(  
                 model_cfg=cfg.YOLOR.CFG,

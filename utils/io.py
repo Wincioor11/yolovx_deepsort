@@ -4,6 +4,14 @@ import numpy as np
 
 # from utils.log import get_logger
 
+def write_speed_results(filename, seq, detection_time, tracking_time, is_first_sequence):
+    # save_format = '{seq} {detector} {tracker}\n'
+    file_open_mode = 'w' if is_first_sequence else 'a'
+    with open(filename, file_open_mode) as f:
+        # line = save_format.format(seq=seq, detector=detection_time, tracker=tracking_time)
+        line = f'%s %.1f %.1f\n' % (seq, detection_time, tracking_time)
+        f.write(line)
+        f.flush()
 
 def write_results(filename, results, data_type):
     if data_type == 'mot':

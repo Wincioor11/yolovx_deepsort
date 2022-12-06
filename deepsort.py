@@ -16,7 +16,12 @@ from deep_sort import build_tracker
 from utils.draw import draw_boxes
 from utils.parser import get_config
 from utils.log import get_logger
-from utils.io import write_results
+from utils.io import write_results, write_speed_results
+from utils.general import Profile
+
+# from utils.general import (LOGGER, ROOT, Profile, check_requirements, check_suffix, check_version, colorstr,
+#                            increment_path, is_notebook, make_divisible, non_max_suppression, scale_boxes, xywh2xyxy,
+#                            xyxy2xywh, yaml_load)
 
 import pickle
 
@@ -25,7 +30,12 @@ class VideoTracker(object):
         self.cfg = cfg
         self.args = args
         self.video_path = video_path
-        self.seq_name = self.video_path.split('/')[-3]
+        self.is_mot_from_images = "%" in self.video_path
+        if self.is_mot_from_images:
+            self.seq_name = self.video_path.split('/')[-3]
+        else:
+            self.cfg.SEQ_IDX = 0
+            self.seq_name = self.video_path.split('.')[0]
         ## self.track_class
         # yolov3,   person_id = 0; car_id = 2,  选择人cls_ids=0，作为跟踪; car, cls_ids=2, 具体见 coco.name; 
         # -1  所有目标都进行跟踪
@@ -54,6 +64,11 @@ class VideoTracker(object):
         self.detector = build_detector(cfg, use_cuda=use_cuda)
         self.deepsort = build_tracker(cfg, use_cuda=use_cuda)
         self.class_names = self.detector.class_names
+
+        # time measurements
+        self.detection_time = Profile()
+        self.tracking_time = Profile()
+        # self.overall_time = Profile()
 
     def reid_feature_ele_init(self, reid_dic={}):
     # frame_id = 1, track_id=5):
@@ -130,14 +145,12 @@ class VideoTracker(object):
         if self.args.save_path:
             os.makedirs(self.args.save_path, exist_ok=True)
 
-            
-
             # path of saved video and results
             self.save_video_path = os.path.join(self.args.save_path, "{}.avi".format(self.seq_name))
             self.save_results_path = os.path.join(self.args.save_path, "{}.txt".format(self.seq_name))
 
             # create video writer
-            fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+            fourcc = cv2.VideoWriter_fourcc(*'MJPG') 
             self.writer = cv2.VideoWriter(self.save_video_path, fourcc, 15, (self.im_width, self.im_height))        # defualt, fps=20
 
             # logging
@@ -150,6 +163,7 @@ class VideoTracker(object):
             print(exc_type, exc_value, exc_traceback)
 
     def run(self):
+        print('[DEBUG] Current seq: [{}] {}'.format(self.cfg.SEQ_IDX,self.seq_name))
         results = []
         idx_frame = 0
         while self.vdo.grab():
@@ -158,12 +172,13 @@ class VideoTracker(object):
             if idx_frame % self.args.frame_interval:
                 continue
 
-            start = time.time()
+            # with self.overall_time:
             _, ori_im = self.vdo.retrieve()
             im = cv2.cvtColor(ori_im, cv2.COLOR_BGR2RGB)
 
             # do detection
-            bbox_xywh, cls_conf, cls_ids = self.detector(im)
+            with self.detection_time:
+                bbox_xywh, cls_conf, cls_ids = self.detector(im)
             
             # 画框到一张图片上，并保存
             # imga = draw_boxes(im, bbox_xywh, cls_ids,  cls_conf , class_name_map=self.detector.class_names)  
@@ -178,13 +193,14 @@ class VideoTracker(object):
             
 
             bbox_xywh = bbox_xywh[mask]
-       
+    
             # bbox dilation just in case bbox too small, delete this line if using a better pedestrian detector
-            bbox_xywh[:, 3:] *= 1.2     # 
+            # bbox_xywh[:, 3:] *= 1.2     # 
             cls_conf = cls_conf[mask]
 
             # do tracking
-            outputs, detections = self.deepsort.update(bbox_xywh, cls_conf, im)
+            with self.tracking_time:
+                outputs, detections = self.deepsort.update(bbox_xywh, cls_conf, im)
 
             # draw boxes for visualization
             if len(outputs) > 0:
@@ -198,7 +214,6 @@ class VideoTracker(object):
 
                 results.append((idx_frame - 1, bbox_tlwh, identities))
 
-            end = time.time()
 
             if self.args.display:
                 cv2.imshow("test", ori_im)
@@ -207,9 +222,6 @@ class VideoTracker(object):
             if self.args.save_path:
                 self.writer.write(ori_im)
 
-            # save results
-            write_results(self.save_results_path, results, 'mot')
-
             # logging
             # self.logger.info("time: {:.03f}s, fps: {:.03f}, detection numbers: {}, tracking numbers: {}" \
             #                  .format(end - start, 1 / (end - start), bbox_xywh.shape[0], len(outputs)))
@@ -217,6 +229,17 @@ class VideoTracker(object):
             if len(detections) >0:
                 out_dic = self.update_reid_feature_dic(frame=self.now_frame, detections= detections)
                 self.reid_feature_dic.update(out_dic)
+
+        # save results to file
+        write_results(self.save_results_path, results, 'mot')
+        # print speeds
+        write_speed_results(
+            os.path.join(self.args.save_path, 'speed.txt'), 
+            self.seq_name, 
+            self.detection_time.t / (idx_frame + 1) * 1E3, # speeds per image
+            self.tracking_time.t / (idx_frame + 1) * 1E3,
+            self.cfg.SEQ_IDX == 0
+            )
 
         self.save_dic_to_pkl(dic=self.reid_feature_dic,  output_path=self.args.save_path, cam=self.cam_id)
 

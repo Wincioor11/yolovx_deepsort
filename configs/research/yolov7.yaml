@@ -1,0 +1,10 @@
+YOLOV7:
+  WEIGHT: "./detector_weights/yolov7/yolov7-crowd-50-epochs/best.pt"
+  # WEIGHT: "./detector_weights/yolov7/yolov7-crowd-100-epochs/best.pt"
+
+  IMG_SIZE: 640
+  SCORE_THRESH: 0.35
+  CONF_THRESH: 0.25
+  NMS_THRESH: 0.45
+  IS_XYWH:  True
+  HALF: False
