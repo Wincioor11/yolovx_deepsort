@@ -1,5 +1,6 @@
 YOLOV7:
-  WEIGHT: "./detector_weights/yolov7/yolov7-crowd-50-epochs/best.pt"
+  WEIGHT: "./detector_weights_coco/yolov7/yolov7/yolov7.pt" 
+
   # WEIGHT: "./detector_weights/yolov7/yolov7-crowd-100-epochs/best.pt"
   # WEIGHT: "../yolov7/yolov7.pt"
 

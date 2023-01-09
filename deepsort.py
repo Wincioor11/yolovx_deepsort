@@ -32,10 +32,13 @@ class VideoTracker(object):
         self.video_path = video_path
         self.is_mot_from_images = "%" in self.video_path
         if self.is_mot_from_images:
-            self.seq_name = self.video_path.split('/')[-3]
+            self.seq_name = self.video_path.split('/' if '/' in self.video_path else '\\')[-3]
         else:
-            self.cfg.SEQ_IDX = 0
             self.seq_name = self.video_path.split('.')[0]
+        
+        if not hasattr(self.cfg, 'SEQ_IDX'):
+            self.cfg.SEQ_IDX = 0
+
         ## self.track_class
         # yolov3,   person_id = 0; car_id = 2,  选择人cls_ids=0，作为跟踪; car, cls_ids=2, 具体见 coco.name; 
         # -1  所有目标都进行跟踪

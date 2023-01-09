@@ -1,0 +1,13 @@
+YOLOR:
+  WEIGHT: "./detector_weights_coco/yolor/yolor/yolor_csp.pt" 
+
+  # WEIGHT: "./detector_weights/yolor/yolor-csp-crowd-100-epochs/best.pt" 
+  CFG: "./detector/YOLOR/cfg/yolor_csp.cfg"
+  DATASET: detector/YOLOR/data/crowdhuman.yaml # maybe it is needed?
+
+  IMG_SIZE: 640
+  SCORE_THRESH: 0.35
+  CONF_THRESH: 0.25
+  NMS_THRESH: 0.45
+  IS_XYWH:  True
+  HALF: False

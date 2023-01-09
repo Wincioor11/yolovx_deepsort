@@ -1,0 +1,11 @@
+YOLOX:
+  WEIGHT: "./detector_weights/yolox/yolox_x_ch/best_ckpt.pth"
+  MODEL_FILE:   # default None
+  USE_MODEL_NAME: 'yolox-x'
+  LEGACY: False    # "To be compatible with older versions"  
+  IMG_SIZE: 640
+  SCORE_THRESH: 0.5
+  CONF_THRESH: 0.25
+  NMS_THRESH: 0.45
+  IS_XYWH:  True
+  HALF: False

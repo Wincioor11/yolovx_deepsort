@@ -1,0 +1,16 @@
+YOLOV5:
+  WEIGHT: "./detector_weights_coco/yolov5/yolov5/yolov5m.pt" 
+
+  # WEIGHT: "./detector_weights/yolov5/yolov5m-crowd-100-epochs/best.pt"
+  
+  IMG_SIZE: 640
+  SCORE_THRESH: 0.5
+  CONF_THRESH: 0.25
+  NMS_THRESH: 0.45
+  IS_XYWH:  True
+
+  IMG_SIZE_HEIGHT: 640
+  IMG_SIZE_WIDTH: 640
+  OpenCV_DNN: False
+  DEVICE: ''
+  DATA_CONFIG: "./detector/YOLOV5/data/crowdhuman.yaml"
